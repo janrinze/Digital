@@ -1740,8 +1740,15 @@ public final class Main extends JFrame implements ClosingWindowListener.ConfirmS
         Also, the HTML rendering does not seem to be supported. See GitHub #190.
         Therefore also on MosOS the MetalLookAndFeel is used.
          */
-        try { // enforce MetalLookAndFeel
-            UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
+        try {
+            if (Screen.isMac()) {
+                System.setProperty("apple.laf.useScreenMenuBar", "true");
+                System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Digital");  // doesn't work, using java argument -Xdock:name="Digital" instead
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            } else {
+                // enforce MetalLookAndFeel
+                UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
+            }
         } catch (ClassNotFoundException | InstantiationException | UnsupportedLookAndFeelException | IllegalAccessException e) {
             e.printStackTrace();
         }
