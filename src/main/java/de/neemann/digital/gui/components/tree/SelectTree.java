@@ -42,6 +42,7 @@ public class SelectTree extends JTree {
         super(model);
         this.shapeFactory = shapeFactory;
         setSelectionModel(null);
+        setRowHeight(0);
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent mouseEvent) {
