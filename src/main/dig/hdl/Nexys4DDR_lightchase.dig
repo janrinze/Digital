@@ -8,7 +8,7 @@
       <elementAttributes>
         <entry>
           <string>Description</string>
-          <string>Board: Nexys4 DDR</string>
+          <string>Board: Nexys4DDR</string>
         </entry>
       </elementAttributes>
       <pos x="1020" y="360"/>
@@ -131,28 +131,6 @@ die Pins korrekt zuzuordnen.}}</string>
       <pos x="500" y="-320"/>
     </visualElement>
     <visualElement>
-      <elementName>Clock</elementName>
-      <elementAttributes>
-        <entry>
-          <string>runRealTime</string>
-          <boolean>true</boolean>
-        </entry>
-        <entry>
-          <string>Label</string>
-          <string>Clock</string>
-        </entry>
-        <entry>
-          <string>Frequency</string>
-          <int>50</int>
-        </entry>
-        <entry>
-          <string>pinNumber</string>
-          <string>W5</string>
-        </entry>
-      </elementAttributes>
-      <pos x="620" y="300"/>
-    </visualElement>
-    <visualElement>
       <elementName>Out</elementName>
       <elementAttributes>
         <entry>
@@ -175,7 +153,7 @@ die Pins korrekt zuzuordnen.}}</string>
       <elementAttributes>
         <entry>
           <string>rotation</string>
-          <rotation reference="../../../../visualElement[13]/elementAttributes/entry/rotation"/>
+          <rotation reference="../../../../visualElement[12]/elementAttributes/entry/rotation"/>
         </entry>
         <entry>
           <string>Label</string>
@@ -193,7 +171,7 @@ die Pins korrekt zuzuordnen.}}</string>
       <elementAttributes>
         <entry>
           <string>rotation</string>
-          <rotation reference="../../../../visualElement[13]/elementAttributes/entry/rotation"/>
+          <rotation reference="../../../../visualElement[12]/elementAttributes/entry/rotation"/>
         </entry>
         <entry>
           <string>Label</string>
@@ -211,7 +189,7 @@ die Pins korrekt zuzuordnen.}}</string>
       <elementAttributes>
         <entry>
           <string>rotation</string>
-          <rotation reference="../../../../visualElement[13]/elementAttributes/entry/rotation"/>
+          <rotation reference="../../../../visualElement[12]/elementAttributes/entry/rotation"/>
         </entry>
         <entry>
           <string>Label</string>
@@ -229,7 +207,7 @@ die Pins korrekt zuzuordnen.}}</string>
       <elementAttributes>
         <entry>
           <string>rotation</string>
-          <rotation reference="../../../../visualElement[13]/elementAttributes/entry/rotation"/>
+          <rotation reference="../../../../visualElement[12]/elementAttributes/entry/rotation"/>
         </entry>
         <entry>
           <string>Label</string>
@@ -247,7 +225,7 @@ die Pins korrekt zuzuordnen.}}</string>
       <elementAttributes>
         <entry>
           <string>rotation</string>
-          <rotation reference="../../../../visualElement[13]/elementAttributes/entry/rotation"/>
+          <rotation reference="../../../../visualElement[12]/elementAttributes/entry/rotation"/>
         </entry>
         <entry>
           <string>Label</string>
@@ -265,7 +243,7 @@ die Pins korrekt zuzuordnen.}}</string>
       <elementAttributes>
         <entry>
           <string>rotation</string>
-          <rotation reference="../../../../visualElement[13]/elementAttributes/entry/rotation"/>
+          <rotation reference="../../../../visualElement[12]/elementAttributes/entry/rotation"/>
         </entry>
         <entry>
           <string>Label</string>
@@ -409,7 +387,7 @@ die Pins korrekt zuzuordnen.}}</string>
       <elementAttributes>
         <entry>
           <string>rotation</string>
-          <rotation reference="../../../../visualElement[26]/elementAttributes/entry/rotation"/>
+          <rotation reference="../../../../visualElement[25]/elementAttributes/entry/rotation"/>
         </entry>
         <entry>
           <string>Label</string>
@@ -427,7 +405,7 @@ die Pins korrekt zuzuordnen.}}</string>
       <elementAttributes>
         <entry>
           <string>rotation</string>
-          <rotation reference="../../../../visualElement[26]/elementAttributes/entry/rotation"/>
+          <rotation reference="../../../../visualElement[25]/elementAttributes/entry/rotation"/>
         </entry>
         <entry>
           <string>Label</string>
@@ -439,6 +417,28 @@ die Pins korrekt zuzuordnen.}}</string>
         </entry>
       </elementAttributes>
       <pos x="980" y="20"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Clock</elementName>
+      <elementAttributes>
+        <entry>
+          <string>runRealTime</string>
+          <boolean>true</boolean>
+        </entry>
+        <entry>
+          <string>Label</string>
+          <string>Clock</string>
+        </entry>
+        <entry>
+          <string>Frequency</string>
+          <int>200</int>
+        </entry>
+        <entry>
+          <string>pinNumber</string>
+          <string>E3</string>
+        </entry>
+      </elementAttributes>
+      <pos x="620" y="300"/>
     </visualElement>
   </visualElements>
   <wires>

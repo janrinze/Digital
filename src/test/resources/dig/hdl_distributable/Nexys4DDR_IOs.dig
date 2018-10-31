@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <circuit>
   <version>1</version>
-  <attributes>
-    <entry>
-      <string>lockedMode</string>
-      <boolean>true</boolean>
-    </entry>
-  </attributes>
+  <attributes/>
   <visualElements>
     <visualElement>
       <elementName>Out</elementName>
@@ -1743,7 +1738,7 @@
         </entry>
         <entry>
           <string>pinNumber</string>
-          <string>G19,H19,J19,N19</string>
+          <string>A3,B4,C5,A4</string>
         </entry>
       </elementAttributes>
       <pos x="1040" y="120"/>
@@ -1761,7 +1756,7 @@
         </entry>
         <entry>
           <string>pinNumber</string>
-          <string>J17,H17,G17,D17</string>
+          <string>C6,A5,B6,A6</string>
         </entry>
       </elementAttributes>
       <pos x="1040" y="320"/>
@@ -1779,7 +1774,7 @@
         </entry>
         <entry>
           <string>pinNumber</string>
-          <string>N18,L18,K18,J18</string>
+          <string>B7,C7,D7,D8</string>
         </entry>
       </elementAttributes>
       <pos x="1040" y="520"/>
