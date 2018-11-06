@@ -685,8 +685,12 @@
     <string name="elem_Switch">Switch</string>
     <string name="elem_Switch_tt">Simple switch.
         There is no gate delay: A signal change is propagated immediately.</string>
-    <string name="elem_Switch_pin_out1">One of the connections of the switch.</string>
-    <string name="elem_Switch_pin_out2">One of the connections of the switch.</string>
+    <string name="elem_Switch_pin">One of the connections of the switch.</string>
+
+    <string name="elem_SwitchDT">Double Throw Switch</string>
+    <string name="elem_SwitchDT_tt">Double Throw Switch.
+        There is no gate delay: A signal change is propagated immediately.</string>
+
     <string name="elem_Fuse">Fuse</string>
     <string name="elem_Fuse_tt">A fuse used to build a one time programmable memory.</string>
     <string name="elem_Fuse_pin_out1">One of the connections of the fuse.</string>
@@ -981,8 +985,8 @@
     <string name="key_Inputs_tt">The Number of Inputs used. Every input needs to be connected.</string>
     <string name="key_Label">Label</string><!-- Out, LED, In, Clock, Button, Probe, LightBulb, LedMatrix, RotEncoder, Keyboard, Terminal, RS_FF, JK_FF, D_FF, T_FF, JK_FF_AS, D_FF_AS, Register, ROM, RAMDualPort, RAMSinglePort, RAMSinglePortSel, EEPROM, GraphicCard, Counter, Add, Sub, Mul, BarrelShifter, Comparator, Switch, Relay, PFET, NFET, FGPFET, FGNFET, Testcase, PowerSupply, Reset, Break -->
     <string name="key_Label_tt">The name of this element.</string>
-    <string name="key_Size">Size</string><!-- LED -->
-    <string name="key_Size_tt">The size of the LED in the circuit.</string>
+    <string name="key_Size">Size</string><!-- LED, SevenSeg -->
+    <string name="key_Size_tt">The size of the shape in the circuit.</string>
     <string name="key_Language">Language</string>
     <string name="key_Language_tt">Language of the GUI. Will only take effect after a restart.</string>
     <string name="key_NetName">Net name</string><!-- Tunnel -->
