@@ -61,7 +61,7 @@ public final class BoardProvider {
                         "E3",
                         10,
                         new ClockIntegratorARTIX7(10),
-                        "xc7a100tcsg324-1L");
+                        "xc7a100tcsg324-1");
             case "mimasv1":
                 return new MimasV1Board();
             case "mimasv2":
