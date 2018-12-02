@@ -7,6 +7,7 @@ package de.neemann.digital.analyse;
 
 import de.neemann.digital.core.Model;
 import de.neemann.digital.core.Signal;
+import de.neemann.digital.gui.Main;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,14 +24,15 @@ public class ModelAnalyserInfo {
     private ArrayList<Signal> inputs;
     private ArrayList<Signal> outputs;
     private ArrayList<String> pinsWithoutNumber;
+    private Main.CreatedNotification mainCreatedNotification;
 
     /**
      * creates a new instance
      *
      * @param model the model used
      */
-    ModelAnalyserInfo(Model model) {
-        if (model.getClocks().size() == 1)
+    public ModelAnalyserInfo(Model model) {
+        if (model != null && model.getClocks().size() == 1)
             clockPin = model.getClocks().get(0).getClockPin();
         else
             clockPin = null;
@@ -39,7 +41,13 @@ public class ModelAnalyserInfo {
         outputBusMap = new HashMap<>();
     }
 
-    void setInOut(ArrayList<Signal> inputs, ArrayList<Signal> outputs) {
+    /**
+     * Sets the inputs and outputs
+     *
+     * @param inputs  the inputs
+     * @param outputs the outputs
+     */
+    public void setInOut(ArrayList<Signal> inputs, ArrayList<Signal> outputs) {
         this.inputs = new ArrayList<>(inputs);
         this.outputs = new ArrayList<>(outputs);
     }
@@ -97,7 +105,13 @@ public class ModelAnalyserInfo {
         inputBusMap.put(name, names);
     }
 
-    void addOutputBus(String name, ArrayList<String> names) {
+    /**
+     * Adds an output bus.
+     *
+     * @param name  the bus name
+     * @param names the individual names in the truth table
+     */
+    public void addOutputBus(String name, ArrayList<String> names) {
         outputBusMap.put(name, names);
     }
 
@@ -113,5 +127,21 @@ public class ModelAnalyserInfo {
      */
     public HashMap<String, ArrayList<String>> getOutputBusMap() {
         return outputBusMap;
+    }
+
+    /**
+     * Sets the fsm state info;
+     *
+     * @param info the info instance
+     */
+    public void setMainCreatedNotification(Main.CreatedNotification info) {
+        mainCreatedNotification = info;
+    }
+
+    /**
+     * @return the fsm state info
+     */
+    public Main.CreatedNotification getMainCreatedNotification() {
+        return mainCreatedNotification;
     }
 }

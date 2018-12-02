@@ -6,7 +6,6 @@
 package de.neemann.digital.core.switching;
 
 import de.neemann.digital.core.*;
-import de.neemann.digital.core.element.ElementAttributes;
 import de.neemann.digital.core.wiring.bus.BusModelStateObserver;
 import de.neemann.digital.core.wiring.bus.CommonBusValue;
 import de.neemann.digital.lang.Lang;
@@ -31,21 +30,6 @@ public final class PlainSwitch implements NodeInterface {
     /**
      * Creates a new instance
      *
-     * @param attr   the elements attributes
-     * @param closed true if switch is closed
-     * @param out1   name of output 1
-     * @param out2   name of output 2
-     */
-    PlainSwitch(ElementAttributes attr, boolean closed, String out1, String out2) {
-        bits = attr.getBits();
-        this.closed = closed;
-        output1 = new ObservableValue(out1, bits).setBidirectional().setToHighZ().setDescription(Lang.get("elem_Switch_pin")).setSwitchPin(true);
-        output2 = new ObservableValue(out2, bits).setBidirectional().setToHighZ().setDescription(Lang.get("elem_Switch_pin")).setSwitchPin(true);
-    }
-
-    /**
-     * Creates a new instance
-     *
      * @param bits   the number of bits
      * @param closed initial state
      * @param out1   name of output 1
@@ -56,20 +40,6 @@ public final class PlainSwitch implements NodeInterface {
         this.closed = closed;
         output1 = new ObservableValue(out1, bits).setBidirectional().setToHighZ().setDescription(Lang.get("elem_Switch_pin")).setSwitchPin(true);
         output2 = new ObservableValue(out2, bits).setBidirectional().setToHighZ().setDescription(Lang.get("elem_Switch_pin")).setSwitchPin(true);
-    }
-
-    /**
-     * Creates a new instance
-     *
-     * @param output1 first output
-     * @param output2 second output
-     * @param closed  initial state
-     */
-    PlainSwitch(ObservableValue output1, ObservableValue output2, boolean closed) {
-        this.bits = output1.getBits();
-        this.closed = closed;
-        this.output1 = output1;
-        this.output2 = output2;
     }
 
     /**
@@ -97,29 +67,7 @@ public final class PlainSwitch implements NodeInterface {
             input2.addObserverToValue(this).checkBits(bits, null);
             switch (unidirectional) {
                 case NO:
-                    if (input1 instanceof CommonBusValue) {
-                        if (input2 instanceof CommonBusValue) {
-                            final CommonBusValue in1 = (CommonBusValue) input1;
-                            final CommonBusValue in2 = (CommonBusValue) input2;
-                            ObservableValue constant = in1.searchConstant();
-                            if (constant != null)
-                                switchModel = new UniDirectionalSwitch(constant, output2);
-                            else {
-                                constant = in2.searchConstant();
-                                if (constant != null)
-                                    switchModel = new UniDirectionalSwitch(constant, output1);
-                                else
-                                    switchModel = new RealSwitch(in1, in2);
-                            }
-                        } else
-                            switchModel = new UniDirectionalSwitch(input1, output2);
-                    } else {
-                        if (input2 instanceof CommonBusValue) {
-                            switchModel = new UniDirectionalSwitch(input2, output1);
-                        } else {
-                            throw new NodeException(Lang.get("err_switchHasNoNet"), output1, output2);
-                        }
-                    }
+                    switchModel = createSwitchModel(input1, input2, output1, output2, true);
                     break;
                 case FROM1TO2:
                     switchModel = new UniDirectionalSwitch(input1, output2);
@@ -127,6 +75,36 @@ public final class PlainSwitch implements NodeInterface {
                 case FROM2TO1:
                     switchModel = new UniDirectionalSwitch(input2, output1);
                     break;
+            }
+        }
+    }
+
+    static SwitchModel createSwitchModel(
+            ObservableValue input1, ObservableValue input2,
+            ObservableValue output1, ObservableValue output2,
+            boolean setOpenContactToHighZ) throws NodeException {
+
+        if (input1 instanceof CommonBusValue) {
+            if (input2 instanceof CommonBusValue) {
+                final CommonBusValue in1 = (CommonBusValue) input1;
+                final CommonBusValue in2 = (CommonBusValue) input2;
+                ObservableValue constant = in1.searchConstant();
+                if (constant != null)
+                    return new UniDirectionalSwitch(constant, output2);
+                else {
+                    constant = in2.searchConstant();
+                    if (constant != null)
+                        return new UniDirectionalSwitch(constant, output1, setOpenContactToHighZ);
+                    else
+                        return new RealSwitch(in1, in2);
+                }
+            } else
+                return new UniDirectionalSwitch(input1, output2);
+        } else {
+            if (input2 instanceof CommonBusValue) {
+                return new UniDirectionalSwitch(input2, output1, setOpenContactToHighZ);
+            } else {
+                throw new NodeException(Lang.get("err_switchHasNoNet"), output1, output2);
             }
         }
     }
@@ -141,7 +119,7 @@ public final class PlainSwitch implements NodeInterface {
      *
      * @param ov the builder to use
      */
-    public void addOutputsTo(ObservableValues.Builder ov) {
+    void addOutputsTo(ObservableValues.Builder ov) {
         ov.add(output1, output2);
     }
 
@@ -215,11 +193,17 @@ public final class PlainSwitch implements NodeInterface {
     private static final class UniDirectionalSwitch implements SwitchModel {
         private final ObservableValue input;
         private final ObservableValue output;
+        private final boolean setOpenContactToHighZ;
         private boolean closed;
 
         UniDirectionalSwitch(ObservableValue input, ObservableValue output) {
+            this(input, output, true);
+        }
+
+        UniDirectionalSwitch(ObservableValue input, ObservableValue output, boolean setOpenContactToHighZ) {
             this.input = input;
             this.output = output;
+            this.setOpenContactToHighZ = setOpenContactToHighZ;
         }
 
         @Override
@@ -227,7 +211,8 @@ public final class PlainSwitch implements NodeInterface {
             if (closed) {
                 output.set(input.getValue(), input.getHighZ());
             } else {
-                output.setToHighZ();
+                if (setOpenContactToHighZ)
+                    output.setToHighZ();
             }
         }
 

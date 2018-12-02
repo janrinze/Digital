@@ -45,6 +45,11 @@
     <string name="btn_apply">Apply</string>
     <string name="btn_editRom_tt">Edits the content of the selected ROM/EEPROM</string>
     <string name="btn_clearRom_tt">Removes the stored data for the selected ROM. The content which is stored in the ROM directly is used instead.</string>
+    <string name="btn_saveTemplate">Template</string>
+    <string name="btn_saveTemplate_tt">Creates an SVG template which can then be edited with Inkscape.</string>
+    <string name="btn_loadSvg">Import</string>
+    <string name="btn_loadSvg_tt">Import an SVG file. To create a suitable SVG file, it is easiest to first create
+        a SVG template and then edit it.</string>
     <string name="msg_warning">Warning</string>
     <string name="cancel">Cancel</string>
     <string name="digital">Digital</string>
@@ -560,7 +565,7 @@
     <string name="elem_RegisterFile_pin_Din">The data to be stored in the register Rw.</string>
 
     <string name="elem_Counter">Counter</string>
-    <string name="elem_Counter_short">count</string>
+    <string name="elem_Counter_short">Counter</string>
     <string name="elem_Counter_tt">A simple counter component. The clock input increases the counter.
         Can be reset back to 0 with the clr input.
         The number of bits can be set in the attribute dialog.</string>
@@ -814,10 +819,10 @@
     <string name="err_noClockFound">No clock found in logic</string>
     <string name="err_noInputsAvailable">No inputs available to set</string>
     <string name="err_noShapeFoundFor_N">No shape found for component {0}</string>
-    <string name="err_noValueSetFor_N0_atElement_N1">No value set for {0} at component {1}</string>
+    <string name="err_noValueSetFor_N0_atElement_N1">Nothing connected to input ''{0}'' at component ''{1}''. Open inputs are not allowed.</string>
     <string name="err_notAllOutputsSameBits">Not all connected outputs have the same bit count</string>
     <string name="err_notAllOutputsSupportHighZ">If multiple outputs are connected together, all of them have to be three-state outputs.</string>
-    <string name="err_noOutConnectedToWire">No output connected to a wire: {0}</string>
+    <string name="err_noOutConnectedToWire">No output connected to a wire ({0}). The state of the wire is undefined.</string>
     <string name="err_oneResultIsRequired">Table to small: One result is required!</string>
     <string name="err_output_N_notDefined">Output {0} not defined</string>
     <string name="err_pinMap_NoNameForPin_N">No label for pin {0}</string>
@@ -954,6 +959,7 @@
     <string name="err_noRomFound">No program memory found! The program memory needs to be flagged as such.</string>
     <string name="err_moreThenOneRomFound">More then one program memories found! Only one program memory must be flages as such.</string>
     <string name="err_errorLoadingRomData">Error loading the program memory.</string>
+    <string name="err_parsingSVG">Error while reading the SVG file.</string>
 
     <string name="key_AddrBits">Address Bits</string><!-- ROM, RAMDualPort, RAMSinglePort, RAMSinglePortSel, EEPROM -->
     <string name="key_AddrBits_tt">Number of address bits used.</string>
@@ -1570,6 +1576,8 @@ Make sure the flash process is complete before closing this dialog!</string>
     <string name="msg_testPassed_N">{0} test rows passed</string>
     <string name="msg_testFile">File Tested</string>
     <string name="msg_truthTable">Truth Table</string>
+    <string name="msg_errorImportingSvg">Error while importing the SVG file.</string>
+    <string name="msg_errorCreatingSvgTemplate">Error creating the SVG template.</string>
 
     <string name="ok">OK</string>
     <string name="rot_0">0°</string>
@@ -1733,5 +1741,37 @@ For this, the corresponding input must be set to high impedance ('Z').</p>
 Therefore, the signal 'D_out' is also available to check the value in this case.</p>
 
 </body></html>]]></string>
+
+    <string name="fsm_title">Finite State Machine</string>
+    <string name="fsm_noMove">no movement</string>
+    <string name="fsm_moveTrans">Transitions</string>
+    <string name="fsm_moveStates">Transitions+States</string>
+    <string name="fsm_set_N">set {0}</string>
+    <string name="menu_fsm">Finite State Machine</string>
+    <string name="menu_fsm_tt">Opens a Dialog to Edit a Finite State Machine.</string>
+    <string name="menu_fsm_create">Create</string>
+    <string name="menu_fsm_create_table">State Transition Table</string>
+    <string name="menu_fsm_create_counter">Create Counter</string>
+    <string name="menu_fsm_create_counter_N">{0} States</string>
+    <string name="err_notDeterministic_N">The FSM is not deterministic: {0}</string>
+    <string name="err_fsmNumberUsedTwice_N">State Number {0} used twice.</string>
+    <string name="err_fsmNoInitialState">There is no initial state (state number zero).</string>
+    <string name="err_fsmState_N_notFound">State ''{0}'' not found!</string>
+    <string name="err_fsmInvalidOutputAssignment_N">Wrong  assignment to output (''{0}'')!</string>
+    <string name="err_fsmErrorInCondition_N">Error in condition ''{0}''!</string>
+    <string name="key_stateNum">State Number</string>
+    <string name="key_stateNum_tt">The number which represents this state.</string>
+    <string name="key_stateValues">Outputs</string>
+    <string name="key_stateValues_tt">Defines the output values. If nothing is specified, all values are set to zero.
+        With simple assignments like "A=1, B=0" outputs can be set.
+    </string>
+    <string name="key_transCond">Condition</string>
+    <string name="key_transCond_tt">A boolean expression.</string>
+    <string name="key_transRad">Radius</string>
+    <string name="key_transRad_tt">Radius of the circle in the diagram.</string>
+    <string name="msg_fsmCantCreateTable">Can not create state transition table.</string>
+    <string name="msg_fsmNewState">New State</string>
+    <string name="msg_fsm_errorLoadingFile">Error loading a file!</string>
+    <string name="msg_fsm_errorStoringFile">Error storing a file!</string>
 
 </resources>

@@ -5,55 +5,49 @@
  */
 package de.neemann.digital.core.switching;
 
-import de.neemann.digital.core.Model;
-import de.neemann.digital.core.NodeException;
-import de.neemann.digital.core.ObservableValue;
-import de.neemann.digital.core.ObservableValues;
-import de.neemann.digital.core.element.PinDescription;
+import de.neemann.digital.core.*;
 import de.neemann.digital.lang.Lang;
 
 /**
  * A simple double throw switch
  */
-public final class PlainSwitchDT {
-    private final PlainSwitch s1;
-    private final PlainSwitch s2;
-    private final ObservableValue outputAB;
-    private final ObservableValue outputAC;
+public final class PlainSwitchDT implements NodeInterface {
+    private final ObservableValue outputA;
     private final ObservableValue outputB;
     private final ObservableValue outputC;
+    private final int bits;
+    private PlainSwitch.SwitchModel s1;
+    private PlainSwitch.SwitchModel s2;
+    private boolean closed = false;
 
 
     PlainSwitchDT(int bits, int num) {
-        outputAB = new ObservableValue("A" + num, bits).setBidirectional().setToHighZ().setDescription(Lang.get("elem_Switch_pin")).setSwitchPin(true);
-        outputAC = new ObservableValue("AC" + num, bits).setBidirectional().setToHighZ().setDescription(PinDescription.IGNORE).setSwitchPin(true);
+        this.bits = bits;
+        outputA = new ObservableValue("A" + num, bits).setBidirectional().setToHighZ().setDescription(Lang.get("elem_Switch_pin")).setSwitchPin(true);
         outputB = new ObservableValue("B" + num, bits).setBidirectional().setToHighZ().setDescription(Lang.get("elem_Switch_pin")).setSwitchPin(true);
         outputC = new ObservableValue("C" + num, bits).setBidirectional().setToHighZ().setDescription(Lang.get("elem_Switch_pin")).setSwitchPin(true);
-        s1 = new PlainSwitch(outputAB, outputB, false);
-        s2 = new PlainSwitch(outputAC, outputC, true);
-    }
-
-    /**
-     * Adds the outputs to the given builder
-     *
-     * @param ov the builder to use
-     */
-    public void addOutputs(ObservableValues.Builder ov) {
-        ov.add(outputAB, outputAC, outputB, outputC);
     }
 
     /**
      * Sets the inputs of this switch
      *
-     * @param inAB first input of pin A
-     * @param inAC second input of pin A
-     * @param inB  pin B
-     * @param inC  Pin C
+     * @param inA first input, the DT switch anchor
+     * @param inB pin B
+     * @param inC Pin C
      * @throws NodeException NodeException
      */
-    public void setInputs(ObservableValue inAB, ObservableValue inAC, ObservableValue inB, ObservableValue inC) throws NodeException {
-        s1.setInputs(inAB, inB);
-        s2.setInputs(inAC, inC);
+    public void setInputs(ObservableValue inA, ObservableValue inB, ObservableValue inC) throws NodeException {
+        if (inA != null && (inB != null || inC != null))
+            inA.addObserverToValue(this).checkBits(bits, null);
+
+        if (inA != null && inB != null) {
+            inB.addObserverToValue(this).checkBits(bits, null);
+            s1 = PlainSwitch.createSwitchModel(inA, inB, outputA, outputB, inC == null);
+        }
+        if (inA != null && inC != null) {
+            inC.addObserverToValue(this).checkBits(bits, null);
+            s2 = PlainSwitch.createSwitchModel(inA, inC, outputA, outputC, inB == null);
+        }
     }
 
     /**
@@ -62,26 +56,44 @@ public final class PlainSwitchDT {
      * @param model the model
      */
     public void init(Model model) {
-        s1.init(model);
-        s2.init(model);
+        if (s1 != null) {
+            s1.setModel(model);
+            s1.setClosed(closed);
+        }
+        if (s2 != null) {
+            s2.setModel(model);
+            s2.setClosed(!closed);
+        }
+        hasChanged();
     }
 
     /**
      * Sets the state of the switch
      *
-     * @param isClosed true is A-B is closed and A-C is open
+     * @param isClosed true means A-B is closed and A-C is open
      */
     public void setClosed(boolean isClosed) {
-        s1.setClosed(isClosed);
-        s2.setClosed(!isClosed);
+        if (this.closed != isClosed) {
+            this.closed = isClosed;
+            if (s1 != null)
+                s1.setClosed(closed);
+            if (s2 != null)
+                s2.setClosed(!closed);
+            hasChanged();
+        }
     }
 
-    /**
-     * calles is state has changed
-     */
-    public void hashChanged() {
-        s1.hasChanged();
-        s2.hasChanged();
+    @Override
+    public void hasChanged() {
+        if (s1 != null)
+            s1.propagate();
+        if (s2 != null)
+            s2.propagate();
+    }
+
+    @Override
+    public ObservableValues getOutputs() {
+        return new ObservableValues(outputA, outputB, outputC);
     }
 
     /**
@@ -89,7 +101,7 @@ public final class PlainSwitchDT {
      *
      * @param ov the builder
      */
-    public void addOutputsTo(ObservableValues.Builder ov) {
-        ov.add(outputAB, outputAC, outputB, outputC);
+    void addOutputsTo(ObservableValues.Builder ov) {
+        ov.add(outputA, outputB, outputC);
     }
 }

@@ -45,6 +45,11 @@
     <string name="btn_apply">Setzen</string>
     <string name="btn_editRom_tt">Bearbeitet den Inhalt des ausgewählten ROM/EEPROM.</string>
     <string name="btn_clearRom_tt">Entfernt die hier gespeicherten Daten des ausgewählten ROM. Es wird stattdessen der direkt im ROM gespeicherte Inhalt verwendet.</string>
+    <string name="btn_saveTemplate">Template</string>
+    <string name="btn_saveTemplate_tt">Ein SVG Template erzeugen, welches dann mit z.B. Inkscape bearbeitet werden kann.</string>
+    <string name="btn_loadSvg">Import</string>
+    <string name="btn_loadSvg_tt">Importieren einer SVG-Datei. Um eine geeignete SVG Datei zu erstellen, ist es
+        am einfachsten zunächst ein Template zu erzeugen und dieses dann zu bearbeiten.</string>
     <string name="msg_warning">Warnung</string>
     <string name="cancel">Abbrechen</string>
     <string name="digital">Digital</string>
@@ -817,10 +822,10 @@
     <string name="err_noClockFound">Kein Taktgeber in der Schaltung gefunden</string>
     <string name="err_noInputsAvailable">Es sind keine Eingänge vorhanden</string>
     <string name="err_noShapeFoundFor_N">Es wurde kein Diagramm für {0} gefunden.</string>
-    <string name="err_noValueSetFor_N0_atElement_N1">Kein Wert gesetzt für {0} an Element {1}</string>
+    <string name="err_noValueSetFor_N0_atElement_N1">Mit dem Eingang ''{0}'' an Element ''{1}'' ist nichts verbunden. Offene Eingänge sind nicht erlaubt.</string>
     <string name="err_notAllOutputsSameBits">Es haben nicht alle Ausgänge die gleiche Bitbreite</string>
     <string name="err_notAllOutputsSupportHighZ">Wenn mehrere Ausgänge verbunden sind, müssen alle Ausgänge Tri-State Ausgänge sein.</string>
-    <string name="err_noOutConnectedToWire">Kein Ausgang mit der Leitung verbunden: {0}</string>
+    <string name="err_noOutConnectedToWire">Es ist kein Ausgang mit der Leitung verbunden ({0}). Der Zustand der Leitung ist undefiniert.</string>
     <string name="err_oneResultIsRequired">Tabelle zu klein: Mindestens ein Ergebnis ist erforderlich!</string>
     <string name="err_output_N_notDefined">Ausgang {0} ist nicht definiert</string>
     <string name="err_pinMap_NoNameForPin_N">Kein Name für Pin {0}</string>
@@ -957,6 +962,7 @@ Sind evtl. die Namen der Variablen nicht eindeutig?</string>
     <string name="err_noRomFound">Kein Programmspeicher im Modell gefunden! Ein Programmspeicher muss gewählt werden!</string>
     <string name="err_moreThenOneRomFound">Mehr als einen Programmspeicher gefunden. Es darf nur einen Programmspeicher geben.</string>
     <string name="err_errorLoadingRomData">Fehler beim Laden des Programmspeichers.</string>
+    <string name="err_parsingSVG">Fehler beim Laden der SVG-Datei.</string>
 
     <string name="key_AddrBits">Adress-Bits</string><!-- ROM, RAMDualPort, RAMSinglePort, RAMSinglePortSel, EEPROM -->
     <string name="key_AddrBits_tt">Anzahl der Adress-Bits, die verwendet werden.</string>
@@ -1582,6 +1588,8 @@ Stellen Sie sicher, dass der Flash-Vorgang abgeschlossen ist, bevor Sie diesen D
     <string name="msg_testPassed_N">{0} Testzeilen überprüft</string>
     <string name="msg_testFile">Testdatei</string>
     <string name="msg_truthTable">Wahrheitstabelle</string>
+    <string name="msg_errorImportingSvg">Fehler beim Import der SVG-Datei.</string>
+    <string name="msg_errorCreatingSvgTemplate">Fehler beim Erzeugen der SVG-Datei.</string>
 
     <string name="ok">Ok</string>
     <string name="rot_0">0°</string>
@@ -1754,4 +1762,36 @@ Daher steht auch das Signal 'D_out' zur Verfügung, um in diesem Fall den Wert z
 
 </body></html>]]></string>
 
+
+    <string name="fsm_title">Endlicher Automat</string>
+    <string name="fsm_noMove">keine Bewegung</string>
+    <string name="fsm_moveTrans">Übergänge</string>
+    <string name="fsm_moveStates">Übergänge+Zustände</string>
+    <string name="fsm_set_N">setze {0}</string>
+    <string name="menu_fsm">Endlicher Automat</string>
+    <string name="menu_fsm_tt">Dialog für die Erstellung endlicher Automaten.</string>
+    <string name="menu_fsm_create">Erzeugen</string>
+    <string name="menu_fsm_create_table">Zustandsübergangstabelle</string>
+    <string name="menu_fsm_create_counter">Zähler erzeugen</string>
+    <string name="menu_fsm_create_counter_N">{0} Zustände</string>
+    <string name="key_stateNum">Zustandsnummer</string>
+    <string name="key_stateNum_tt">Die Nummer welche diesen Zustand representiert.</string>
+    <string name="key_stateValues">Ausgänge</string>
+    <string name="key_stateValues_tt">Legt Ausgangswerte fest. Wird nichts angegeben, werden alle Werte auf Null gesetzt.
+        Mit einfachen Zuweisungen wie "A=1, B=0" können Ausgänge gesetzt werden.
+    </string>
+    <string name="key_transCond">Bedingung</string>
+    <string name="key_transCond_tt">Ein boolscher Ausdruck.</string>
+    <string name="key_transRad">Radius</string>
+    <string name="key_transRad_tt">Radius des Kreises in der Darstellung.</string>
+    <string name="err_notDeterministic_N">Der Automat ist nicht deterministisch: {0}</string>
+    <string name="err_fsmNumberUsedTwice_N">Zustandsnummer {0} ist nicht eindeutig.</string>
+    <string name="err_fsmNoInitialState">Es gibt keinen Initialzustand.</string>
+    <string name="err_fsmState_N_notFound">Zustand ''{0}'' nicht gefunden!</string>
+    <string name="err_fsmInvalidOutputAssignment_N">Falsche Zuweisung an einen Ausgang (''{0}'')!</string>
+    <string name="err_fsmErrorInCondition_N">Fehler in Bedingung ''{0}''!</string>
+    <string name="msg_fsm_errorLoadingFile">Fehler beim Laden der Datei!</string>
+    <string name="msg_fsm_errorStoringFile">Fehler beim Speichern der Datei!</string>
+    <string name="msg_fsmNewState">Neuer Zustand</string>
+    <string name="msg_fsmCantCreateTable">Zustandsübergangstabelle kann nicht erzeugt werden.</string>
 </resources>

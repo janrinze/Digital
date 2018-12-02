@@ -98,6 +98,16 @@ public class VectorFloat implements VectorInterface {
     }
 
     /**
+     * Returns the sclar product
+     *
+     * @param p the other vector
+     * @return the scalar procuct
+     */
+    public float mul(VectorFloat p) {
+        return x * p.x + y * p.y;
+    }
+
+    /**
      * Creates a new vector which has the value this/d
      *
      * @param d a
@@ -121,9 +131,34 @@ public class VectorFloat implements VectorInterface {
         return Objects.hash(x, y);
     }
 
+    @Override
+    public String toString() {
+        return "(x=" + x
+                + ", y=" + y
+                + ')';
+    }
 
     @Override
     public Vector round() {
         return new Vector(getX(), getY());
+    }
+
+    @Override
+    public float len() {
+        return (float) Math.sqrt(x * x + y * y);
+    }
+
+    @Override
+    public VectorFloat toFloat() {
+        return this;
+    }
+
+    /**
+     * Creates vector which is orthogonal to this one.
+     *
+     * @return the orthogonal vector
+     */
+    public VectorFloat getOrthogonal() {
+        return new VectorFloat(y, -x);
     }
 }

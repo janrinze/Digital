@@ -5,9 +5,7 @@
  */
 package de.neemann.digital.gui.components.table;
 
-import de.neemann.digital.analyse.AnalyseException;
-import de.neemann.digital.analyse.TruthTable;
-import de.neemann.digital.analyse.TruthTableTableModel;
+import de.neemann.digital.analyse.*;
 import de.neemann.digital.analyse.expression.Expression;
 import de.neemann.digital.analyse.expression.ExpressionException;
 import de.neemann.digital.analyse.expression.Variable;
@@ -93,16 +91,15 @@ public class TableDialog extends JDialog {
     /**
      * Creates a new instance
      *
-     * @param parent       the parent frame
-     * @param truthTable   the table to show
-     * @param library      the library to use
-     * @param shapeFactory the shape factory
-     * @param filename     the file name used to create the names of the created files
+     * @param parent     the parent frame
+     * @param truthTable the table to show
+     * @param library    the library to use
+     * @param filename   the file name used to create the names of the created files
      */
-    public TableDialog(JFrame parent, TruthTable truthTable, ElementLibrary library, ShapeFactory shapeFactory, File filename) {
+    public TableDialog(Window parent, TruthTable truthTable, ElementLibrary library, File filename) {
         super(parent, Lang.get("win_table"));
         this.library = library;
-        this.shapeFactory = shapeFactory;
+        this.shapeFactory = library.getShapeFactory();
         this.filename = filename;
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         kvMap = new KarnaughMapDialog(this, (boolTable, row) -> model.incValue(boolTable, row));
@@ -495,24 +492,42 @@ public class TableDialog extends JDialog {
 
     private void createCircuit(boolean useJKff, ExpressionModifier... modifier) {
         try {
+            final ModelAnalyserInfo modelAnalyzerInfo = model.getTable().getModelAnalyzerInfo();
             CircuitBuilder circuitBuilder = new CircuitBuilder(shapeFactory, useJKff, model.getTable().getVars())
-                    .setModelAnalyzerInfo(model.getTable().getModelAnalyzerInfo());
+                    .setModelAnalyzerInfo(modelAnalyzerInfo);
             new BuilderExpressionCreator(circuitBuilder, modifier)
                     .setUseJKOptimizer(useJKff)
                     .create(lastGeneratedExpressions);
             Circuit circuit = circuitBuilder.createCircuit();
+
+            Main.CreatedNotification mon = null;
+            if (modelAnalyzerInfo != null)
+                mon = modelAnalyzerInfo.getMainCreatedNotification();
             new Main.MainBuilder()
                     .setParent(TableDialog.this)
                     .setLibrary(library)
                     .setCircuit(circuit)
                     .setBaseFileName(filename)
+                    .setCreatedNotification(mon)
                     .openLater();
         } catch (ExpressionException | FormatterException | RuntimeException e) {
             new ErrorMessage(Lang.get("msg_errorDuringCalculation")).addCause(e).show(this);
         }
     }
 
-    void setModel(TruthTableTableModel model) {
+    /**
+     * @return the used table model
+     */
+    public TruthTableTableModel getModel() {
+        return model;
+    }
+
+    /**
+     * Sets the table model
+     *
+     * @param model the model to use
+     */
+    public void setModel(TruthTableTableModel model) {
         this.model = model;
         model.addTableModelListener(new CalculationTableModelListener());
         table.setModel(model);
@@ -524,6 +539,13 @@ public class TableDialog extends JDialog {
         if (filename == null)
             return "unknown";
         else return filename.getName();
+    }
+
+    /**
+     * @return the all solutions dialog
+     */
+    public AllSolutionsDialog getAllSolutionsDialog() {
+        return allSolutionsDialog;
     }
 
     private void setLastUsedGenerator(HardwareDescriptionGenerator generator) {

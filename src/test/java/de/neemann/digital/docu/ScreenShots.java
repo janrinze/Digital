@@ -5,13 +5,18 @@
  */
 package de.neemann.digital.docu;
 
+import de.neemann.digital.analyse.TruthTable;
+import de.neemann.digital.analyse.TruthTableTableModel;
 import de.neemann.digital.core.element.Keys;
+import de.neemann.digital.fsm.gui.FSMFrame;
 import de.neemann.digital.gui.Main;
 import de.neemann.digital.gui.Settings;
 import de.neemann.digital.gui.components.AttributeDialog;
 import de.neemann.digital.gui.components.expression.ExpressionDialog;
 import de.neemann.digital.gui.components.graphics.GraphicDialog;
 import de.neemann.digital.gui.components.karnaugh.KarnaughMapDialog;
+import de.neemann.digital.gui.components.table.AllSolutionsDialog;
+import de.neemann.digital.gui.components.table.ReorderOutputs;
 import de.neemann.digital.gui.components.table.TableDialog;
 import de.neemann.digital.gui.components.testing.TestCaseDescriptionDialog;
 import de.neemann.digital.gui.components.testing.ValueTableDialog;
@@ -41,6 +46,7 @@ public class ScreenShots {
     private static final int WIN_DX = 850;
     private static final int WIN_DY = 500;
     private static GraphicDialog graphic;
+    private static Main mainStatic;
 
     public static void main(String[] args) {
         Settings.getInstance().getAttributes().set(Keys.SETTINGS_DEFAULT_TREESELECT, false);
@@ -130,6 +136,74 @@ public class ScreenShots {
                 .add(new GuiTester.CloseTopMost())
                 .add(new GuiTester.CloseTopMost())
                 .execute();
+
+        File trafficLight = new File(Resources.getRoot(), "../../main/fsm/trafficLightBlink.fsm");
+        new GuiTester()
+                .press("F10")
+                .press("RIGHT", 4)
+                .press("DOWN", 4)
+                .press("ENTER")
+                .delay(500)
+                .add(new GuiTester.WindowCheck<>(FSMFrame.class, (gt, fsmFrame) -> fsmFrame.loadFile(trafficLight)))
+                .press("F10")
+                .press("RIGHT", 2)
+                .press("DOWN", 1)
+                .press("ENTER")
+                .delay(500)
+                .add(closeAllSolutionsDialog())
+                .delay(500)
+                .add(new GuiTester.WindowCheck<>(TableDialog.class, (guiTester, tableDialog) -> {
+                    TruthTable tt = tableDialog.getModel().getTable();
+                    ReorderOutputs ro = new ReorderOutputs(tt);
+                    ro.getItems().swap(3,4);
+                    ro.getItems().swap(4,5);
+                    tableDialog.setModel(new TruthTableTableModel(ro.reorder()));
+                }))
+                .delay(500)
+                .add(closeAllSolutionsDialog())
+                .delay(500)
+                .press("F10")
+                .press("RIGHT", 4)
+                .press("DOWN", 2)
+                .press("ENTER")
+                .delay(500)
+                .add(new GuiTester.WindowCheck<>(Main.class,
+                        (gt, main) -> {
+                            main.getCircuitComponent().translateCircuit(-40, 0);
+                            mainStatic = main;
+                        }))
+                .delay(500)
+                .press("F10")
+                .press("RIGHT", 4)
+                .press("DOWN", 4)
+                .press("ENTER")
+                .delay(500)
+                .add(new GuiTester.WindowCheck<>(FSMFrame.class, (gt, fsmFrame) -> {
+                    fsmFrame.loadFile(trafficLight);
+                    fsmFrame.getContentPane().setPreferredSize(new Dimension(550, 400));
+                    fsmFrame.pack();
+                    final Point location = fsmFrame.getLocation();
+                    fsmFrame.setLocation(location.x + 250, location.y + 100);
+                    fsmFrame.setAlwaysOnTop(true);
+                    fsmFrame.setTitle(trafficLight.getName());
+                    mainStatic.requestFocus();
+                }))
+                .add(new MainScreenShot("screenshot3.png"))
+                .add(new GuiTester.CloseTopMost())
+                .add(new GuiTester.CloseTopMost())
+                .add(new GuiTester.CloseTopMost())
+                .add(new GuiTester.CloseTopMost())
+                .execute();
+    }
+
+    private static GuiTester.WindowCheck<Window> closeAllSolutionsDialog() {
+        return new GuiTester.WindowCheck<>(Window.class, (guiTester, window) -> {
+            if (window instanceof AllSolutionsDialog)
+                window.dispose();
+            else
+                if (window instanceof TableDialog)
+                    ((TableDialog)window).getAllSolutionsDialog().dispose();
+        });
     }
 
     // Set all settings as needed before start this method
