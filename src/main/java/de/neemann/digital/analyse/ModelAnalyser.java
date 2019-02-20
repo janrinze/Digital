@@ -15,8 +15,11 @@ import de.neemann.digital.core.element.ElementAttributes;
 import de.neemann.digital.core.flipflops.FlipflopD;
 import de.neemann.digital.core.flipflops.FlipflopJK;
 import de.neemann.digital.core.flipflops.FlipflopT;
-import de.neemann.digital.core.switching.*;
+import de.neemann.digital.core.switching.NFET;
+import de.neemann.digital.core.switching.Relay;
+import de.neemann.digital.core.switching.RelayDT;
 import de.neemann.digital.core.wiring.Clock;
+import de.neemann.digital.core.wiring.Driver;
 import de.neemann.digital.core.wiring.Splitter;
 import de.neemann.digital.draw.elements.PinException;
 import de.neemann.digital.gui.Main;
@@ -51,6 +54,7 @@ public class ModelAnalyser {
         this.model = model;
 
         try {
+            replaceDrivers();
             replaceTFF();
             replaceJKFF();
         } catch (NodeException e) {
@@ -66,7 +70,7 @@ public class ModelAnalyser {
         modelAnalyzerInfo.setInOut(inputs, outputs);
 
         for (Node n : model)
-            if (n.hasState() && !(n instanceof FlipflopD))
+            if (n.isNotCombinatorial() && !(n instanceof FlipflopD))
                 throw new AnalyseException(Lang.get("err_cannotAnalyse_N", n.getClass().getSimpleName()));
 
         int i = 0;
@@ -456,6 +460,41 @@ public class ModelAnalyser {
             if (ins.contains(i))
                 newList.add(i);
         return newList;
+    }
+
+    private void replaceDrivers() throws NodeException {
+        List<Driver> dList = model.findNode(Driver.class);
+        for (Driver d : dList) {
+            final ObservableValue out = d.getOutputs().get(0);
+            if (!out.getObservers().isEmpty()) throw new NodeException("Driver is not only connected to an output!");
+
+            Signal found = null;
+            for (Signal o : model.getOutputs()) {
+                if (o.getValue() == out)
+                    if (found != null)
+                        throw new NodeException("Driver is connected to multiple outputs!");
+                found = o;
+            }
+            if (found == null)
+                throw new NodeException("Driver is not connected to an output!");
+
+            int foundIndex = model.getOutputs().indexOf(found);
+            if (foundIndex < 0)
+                throw new NodeException("Output not found!");
+
+            model.getOutputs().set(foundIndex,
+                    new Signal(found.getName(), d.getInputValue())
+                            .setPinNumber(found.getPinNumber()));
+
+            model.addOutput(
+                    new Signal(found.getName() + ".OE", d.getEnableValue())
+                            .setPinNumber(found.getPinNumber())
+                            .setPinEnable());
+
+            d.getInputValue().removeObserver(d);
+            d.getEnableValue().removeObserver(d);
+            model.removeNode(d);
+        }
     }
 
 }

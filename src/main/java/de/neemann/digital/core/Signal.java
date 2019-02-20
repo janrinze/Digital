@@ -15,6 +15,7 @@ public final class Signal implements Comparable<Signal> {
     private IntFormat format = IntFormat.def;
     private String pinNumber;
     private ObservableValue bidirectionalReader;
+    private boolean isPinEnable = false;
 
     /**
      * Creates a new Instance
@@ -160,6 +161,23 @@ public final class Signal implements Comparable<Signal> {
      */
     public ObservableValue getBidirectionalReader() {
         return bidirectionalReader;
+    }
+
+    /**
+     * Makes this signal a pin enable signal
+     *
+     * @return this for chained calls
+     */
+    public Signal setPinEnable() {
+        isPinEnable = true;
+        return this;
+    }
+
+    /**
+     * @return true if this is a pin enable signal
+     */
+    public boolean isPinEnable() {
+        return isPinEnable;
     }
 
     /**

@@ -102,7 +102,7 @@ ExpressionCreator - s0 reduced from 17 to 2 variables ([Q_1n, Q_0n])
             if (!set.contains(c.getDescription().getName())) {
                 // nodes with state are allowed to be missing
                 Element n = c.getDescription().createElement(new ElementAttributes());
-                boolean ok = (n instanceof Node) && ((Node) n).hasState();
+                boolean ok = (n instanceof Node) && ((Node) n).isNotCombinatorial();
                 assertTrue("component " + c.getDescription().getName() + " is missing in test/resources/dig/backtrack/AllComponents.dig!", ok);
             }
         }

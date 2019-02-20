@@ -21,7 +21,7 @@ import java.io.File;
  */
 public abstract class Node implements NodeInterface {
 
-    private final boolean hasState;
+    private final boolean notCombinatorial;
     private Model model;
     private int version;
     // used to store the origin of this node
@@ -38,10 +38,10 @@ public abstract class Node implements NodeInterface {
     /**
      * Creates a new node
      *
-     * @param hasState true if node has a state
+     * @param notCombinatorial true if node has a state
      */
-    public Node(boolean hasState) {
-        this.hasState = hasState;
+    public Node(boolean notCombinatorial) {
+        this.notCombinatorial = notCombinatorial;
     }
 
     /**
@@ -93,8 +93,8 @@ public abstract class Node implements NodeInterface {
     /**
      * @return true if the element has a state and is not only combinatorial
      */
-    public boolean hasState() {
-        return hasState;
+    public boolean isNotCombinatorial() {
+        return notCombinatorial;
     }
 
     /**

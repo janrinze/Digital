@@ -221,26 +221,6 @@
       <pos x="1120" y="240"/>
     </visualElement>
     <visualElement>
-      <elementName>Driver</elementName>
-      <elementAttributes>
-        <entry>
-          <string>Bits</string>
-          <int>4</int>
-        </entry>
-      </elementAttributes>
-      <pos x="640" y="400"/>
-    </visualElement>
-    <visualElement>
-      <elementName>DriverInvSel</elementName>
-      <elementAttributes>
-        <entry>
-          <string>Bits</string>
-          <int>4</int>
-        </entry>
-      </elementAttributes>
-      <pos x="640" y="440"/>
-    </visualElement>
-    <visualElement>
       <elementName>Multiplexer</elementName>
       <elementAttributes>
         <entry>

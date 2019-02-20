@@ -24,6 +24,6 @@ public class AnalyseException extends Exception {
      * @param e the cause
      */
     public AnalyseException(Exception e) {
-        super(e);
+        super("", e);
     }
 }

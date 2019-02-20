@@ -44,6 +44,7 @@ public class Driver extends Node implements Element {
      * @param attributes the attributes
      */
     public Driver(ElementAttributes attributes) {
+        super(true);
         bits = attributes.get(Keys.BITS);
         output = new ObservableValue("out", bits)
                 .setToHighZ()
@@ -85,4 +86,17 @@ public class Driver extends Node implements Element {
         return output.asList();
     }
 
+    /**
+     * @return the input value
+     */
+    public ObservableValue getInputValue() {
+        return input;
+    }
+
+    /**
+     * @return the select value
+     */
+    public ObservableValue getEnableValue() {
+        return selIn;
+    }
 }
