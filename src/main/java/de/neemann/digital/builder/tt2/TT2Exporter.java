@@ -128,18 +128,23 @@ public class TT2Exporter implements ExpressionExporter<TT2Exporter> {
         outIndexMap = new HashMap<>();
         i = 0;
         for (String name : builder.getOutputs()) {
-            checkName(name);
-            if (builder.getRegistered().containsKey(name)) {
-                outIndexMap.put(name + ".REG", i++);
-                outputs.add(name + ".REG");
-                outIndexMap.put(name + ".AR", i++);
-                outputs.add(name + ".AR");
-                clkInList.add(i);
-                outIndexMap.put(name + ".C", i++);
-                outputs.add(name + ".C");
-            } else {
+            if (name.endsWith(".OE")) {
                 outIndexMap.put(name, i++);
                 outputs.add(name);
+            } else {
+                checkName(name);
+                if (builder.getRegistered().containsKey(name)) {
+                    outIndexMap.put(name + ".REG", i++);
+                    outputs.add(name + ".REG");
+                    outIndexMap.put(name + ".AR", i++);
+                    outputs.add(name + ".AR");
+                    clkInList.add(i);
+                    outIndexMap.put(name + ".C", i++);
+                    outputs.add(name + ".C");
+                } else {
+                    outIndexMap.put(name, i++);
+                    outputs.add(name);
+                }
             }
         }
 

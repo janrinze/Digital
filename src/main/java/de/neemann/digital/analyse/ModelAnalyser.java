@@ -468,27 +468,27 @@ public class ModelAnalyser {
             final ObservableValue out = d.getOutputs().get(0);
             if (!out.getObservers().isEmpty()) throw new NodeException("Driver is not only connected to an output!");
 
-            Signal found = null;
-            for (Signal o : model.getOutputs()) {
-                if (o.getValue() == out)
-                    if (found != null)
+            Signal outputToEnable = null;
+            int outputToEnableIndex = 0;
+            ArrayList<Signal> outputs = model.getOutputs();
+            for (int i = 0; i < outputs.size(); i++) {
+                if (outputs.get(i).getValue() == out) {
+                    if (outputToEnable != null)
                         throw new NodeException("Driver is connected to multiple outputs!");
-                found = o;
+                    outputToEnable = outputs.get(i);
+                    outputToEnableIndex = i;
+                }
             }
-            if (found == null)
+            if (outputToEnable == null)
                 throw new NodeException("Driver is not connected to an output!");
 
-            int foundIndex = model.getOutputs().indexOf(found);
-            if (foundIndex < 0)
-                throw new NodeException("Output not found!");
-
-            model.getOutputs().set(foundIndex,
-                    new Signal(found.getName(), d.getInputValue())
-                            .setPinNumber(found.getPinNumber()));
+            outputs.set(outputToEnableIndex,
+                    new Signal(outputToEnable.getName(), d.getInputValue())
+                            .setPinNumber(outputToEnable.getPinNumber()));
 
             model.addOutput(
-                    new Signal(found.getName() + ".OE", d.getEnableValue())
-                            .setPinNumber(found.getPinNumber())
+                    new Signal(outputToEnable.getName() + ".OE", d.getEnableValue())
+                            .setPinNumber(outputToEnable.getPinNumber())
                             .setPinEnable());
 
             d.getInputValue().removeObserver(d);

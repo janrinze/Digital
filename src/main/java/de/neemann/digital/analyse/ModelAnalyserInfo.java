@@ -70,8 +70,10 @@ public class ModelAnalyserInfo {
     }
 
     private void addPinNumber(Signal s) {
-        String p = s.getPinNumber();
-        if (p != null && p.length() > 0) pins.put(s.getName(), p);
+        if (!s.isPinEnable()) {
+            String p = s.getPinNumber();
+            if (p != null && p.length() > 0) pins.put(s.getName(), p);
+        }
     }
 
     /**
