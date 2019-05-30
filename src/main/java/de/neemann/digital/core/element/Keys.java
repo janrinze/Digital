@@ -784,10 +784,16 @@ public final class Keys {
     public static final Key<File> SETTINGS_TOOLCHAIN_CONFIG =
             new Key.KeyFile("toolChainConfig", new File("")).setSecondary().setRequiresRestart();
 
+    /**
+     * Number of write ports
+     */
     public static final Key<Integer> WRITE_PORTS =
             new Key.KeyInteger("writePorts", 2)
                     .setMin(1);
 
+    /**
+     * Number of read ports
+     */
     public static final Key<Integer> READ_PORTS =
             new Key.KeyInteger("readPorts", 2)
                     .setMin(1);

@@ -157,7 +157,7 @@ public class RAMMultiAccess extends Node implements Element, RAMInterface {
         memory.setDataFrom(dataField);
     }
 
-    private class WritePort {
+    private final class WritePort {
         private final ObservableValue en;
         private final ObservableValue a;
         private final ObservableValue d;
@@ -177,7 +177,7 @@ public class RAMMultiAccess extends Node implements Element, RAMInterface {
         }
     }
 
-    private class ReadPort {
+    private final class ReadPort {
         private final ObservableValue a;
         private final ObservableValue d;
         private int addr;
