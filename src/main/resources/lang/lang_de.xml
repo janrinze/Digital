@@ -602,6 +602,16 @@
     <string name="elem_RegisterFile_pin_C">Takteingang</string>
     <string name="elem_RegisterFile_pin_Din">Die zu schreibenden Daten.</string>
 
+    <string name="elem_RAMMultiAccess">RAM, Multi Port</string>
+    <string name="elem_RAMMultiAccess_short">RAM</string>
+    <string name="elem_RAMMultiAccess_tt">RAM mit einer konfigurierbaren Anzahl von Schreib- und Leseports.</string>
+    <string name="elem_RAMMultiAccess_pin_WE_N">Schreibfreigabe; Schreib-Port {0}</string>
+    <string name="elem_RAMMultiAccess_pin_WA_N">Adresse; Schreib-Port {0}</string>
+    <string name="elem_RAMMultiAccess_pin_WD_N">Zu schreibende Daten; Schreib-Port {0}</string>
+    <string name="elem_RAMMultiAccess_pin_RA_N">Adresse; Lese-Port {0}</string>
+    <string name="elem_RAMMultiAccess_pin_D_N">Gelesene Daten; Lese-Port {0}</string>
+    <string name="elem_RAMMultiAccess_pin_C">Takt; Bei steigender Flanke wird geschrieben.</string>
+
     <string name="elem_Counter">Zähler</string>
     <string name="elem_Counter_short">Zähler</string>
     <string name="elem_Counter_tt">Ein einfacher Zähler-Baustein.
@@ -1336,6 +1346,11 @@ Sind evtl. die Namen der Variablen nicht eindeutig?</string>
     <string name="key_toolChainConfig">Toolchain Konfiguration</string>
     <string name="key_toolChainConfig_tt">Kann für eine Integration einer externen Toolchain verwendet werden.
         Erlaubt den Start externer Tools, um z.B. einen FPGA zu programmieren o.ä.</string>
+
+    <string name="key_writePorts">Schreib-Ports</string>
+    <string name="key_writePorts_tt">Gibt die Anzahl der unabhängigen Schreib-Ports an.</string>
+    <string name="key_readPorts">Lese-Ports</string>
+    <string name="key_readPorts_tt">Gibt die Anzahl der unabhängigen Lese-Ports an.</string>
 
     <string name="mod_insertWire">Leitung eingefügt.</string>
     <string name="mod_insertCopied">Aus Zwischenablage eingefügt.</string>

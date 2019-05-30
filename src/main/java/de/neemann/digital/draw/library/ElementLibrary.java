@@ -176,6 +176,7 @@ public class ElementLibrary implements Iterable<ElementLibrary.ElementContainer>
                                 .add(RAMSinglePortSel.DESCRIPTION)
                                 .add(RegisterFile.DESCRIPTION)
                                 .add(RAMDualAccess.DESCRIPTION)
+                                .add(RAMMultiAccess.DESCRIPTION)
                                 .add(GraphicCard.DESCRIPTION))
                         .add(new LibraryNode(Lang.get("lib_eeprom"))
                                 .add(EEPROM.DESCRIPTION)

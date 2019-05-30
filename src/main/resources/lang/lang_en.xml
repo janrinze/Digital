@@ -601,6 +601,16 @@
     <string name="elem_RegisterFile_pin_C">Clock</string>
     <string name="elem_RegisterFile_pin_Din">The data to be stored in the register Rw.</string>
 
+    <string name="elem_RAMMultiAccess">RAM, Multi Port</string>
+    <string name="elem_RAMMultiAccess_short">RAM</string>
+    <string name="elem_RAMMultiAccess_tt">RAM mit a configurable number of read and write ports.</string>
+    <string name="elem_RAMMultiAccess_pin_WE_N">Write enable; write port {0}</string>
+    <string name="elem_RAMMultiAccess_pin_WA_N">Address; write port {0}</string>
+    <string name="elem_RAMMultiAccess_pin_WD_N">Data to write; write port {0}</string>
+    <string name="elem_RAMMultiAccess_pin_RA_N">Address; read port {0}</string>
+    <string name="elem_RAMMultiAccess_pin_D_N">data to output; read port {0}</string>
+    <string name="elem_RAMMultiAccess_pin_C">Clock; A rising edge stores the data.</string>
+
     <string name="elem_Counter">Counter</string>
     <string name="elem_Counter_short">Counter</string>
     <string name="elem_Counter_tt">A simple counter component. The clock input increases the counter.
@@ -1324,6 +1334,11 @@
     <string name="key_toolChainConfig">Toolchain Configuration</string>
     <string name="key_toolChainConfig_tt">Used to configurate an integration of a toolchain.
         Allows the start of external tools, e.g. to program an FPGA or similar.</string>
+
+    <string name="key_writePorts">Write Ports</string>
+    <string name="key_writePorts_tt">Sets the number of independent write ports.</string>
+    <string name="key_readPorts">Read Ports</string>
+    <string name="key_readPorts_tt">Sets the number of independent read ports.</string>
 
     <string name="mod_insertWire">Inserted wire.</string>
     <string name="mod_insertCopied">Insert from clipboard.</string>

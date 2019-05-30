@@ -158,6 +158,10 @@ public final class ShapeFactory {
         map.put(PullUp.DESCRIPTION.getName(), PullUpShape::new);
         map.put(PullDown.DESCRIPTION.getName(), PullDownShape::new);
 
+        map.put(RAMMultiAccess.DESCRIPTION.getName(),
+                (attributes, inputs, outputs) -> new GenericShape(Lang.get("elem_RAMMultiAccess_short"),
+                        inputs, outputs, attributes.getLabel(), true, 5));
+
         // disables string formatting for external components, see #272
         map.put(External.DESCRIPTION.getName(),
                 (attributes, inputs, outputs) ->

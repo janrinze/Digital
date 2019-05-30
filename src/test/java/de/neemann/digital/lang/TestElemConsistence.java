@@ -10,6 +10,7 @@ import de.neemann.digital.core.basic.FanIn;
 import de.neemann.digital.core.element.*;
 import de.neemann.digital.core.extern.External;
 import de.neemann.digital.core.memory.LookUpTable;
+import de.neemann.digital.core.memory.RAMMultiAccess;
 import de.neemann.digital.core.switching.RelayDT;
 import de.neemann.digital.core.switching.Relay;
 import de.neemann.digital.core.switching.Switch;
@@ -73,6 +74,7 @@ public class TestElemConsistence extends TestCase {
                 || e instanceof BusSplitter
                 || e instanceof External
                 || e instanceof LookUpTable
+                || e instanceof RAMMultiAccess
                 || e instanceof Relay
                 || e instanceof RelayDT
                 || e instanceof Switch
