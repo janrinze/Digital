@@ -22,6 +22,7 @@ import de.neemann.digital.draw.elements.VisualElement;
 import de.neemann.digital.draw.library.ElementLibrary;
 import de.neemann.digital.draw.library.ElementNotFoundException;
 import de.neemann.digital.draw.library.ElementTypeDescriptionCustom;
+import de.neemann.digital.draw.library.ResolveGenerics;
 import de.neemann.digital.hdl.model2.clock.HDLClockIntegrator;
 import de.neemann.digital.hdl.model2.expression.*;
 
@@ -38,6 +39,8 @@ public class HDLModel implements Iterable<HDLCircuit> {
     private HashMap<Circuit, HDLCircuit> circuitMap;
     private HDLCircuit main;
     private Renaming renaming;
+    private ResolveGenerics resolveGenerics = new ResolveGenerics();
+    private HashMap<String, GenNum> genericInstanceNumbers;
 
     /**
      * Creates a new instance
@@ -47,6 +50,7 @@ public class HDLModel implements Iterable<HDLCircuit> {
     public HDLModel(ElementLibrary elementLibrary) {
         this.elementLibrary = elementLibrary;
         circuitMap = new HashMap<>();
+        genericInstanceNumbers = new HashMap<>();
     }
 
     /**
@@ -63,15 +67,33 @@ public class HDLModel implements Iterable<HDLCircuit> {
             if (td instanceof ElementTypeDescriptionCustom) {
                 ElementTypeDescriptionCustom tdc = (ElementTypeDescriptionCustom) td;
 
-                HDLCircuit c = circuitMap.get(tdc.getCircuit());
-                if (c == null) {
-                    c = new HDLCircuit(tdc.getCircuit(), v.getElementName(), this);
-                    circuitMap.put(tdc.getCircuit(), c);
-                }
+                final Circuit circuit = tdc.getCircuit();
+                if (circuit.getAttributes().get(Keys.IS_GENERIC)) {
 
-                return addInputsOutputs(
-                        new HDLNodeCustom(v.getElementName(), v.getElementAttributes(), c),
-                        v, parent).createExpressions();
+                    Circuit circuitCopy = resolveGenerics.resolveCircuit(v, circuit, elementLibrary);
+
+                    String elementName = v.getElementName();
+                    GenNum num = genericInstanceNumbers.computeIfAbsent(elementName, t -> new GenNum());
+                    elementName = cleanName(elementName.substring(0, elementName.length() - 4) + "_gen" + num.getNum() + ".dig");
+
+                    HDLCircuit c = new HDLCircuit(circuitCopy, elementName, this);
+                    circuitMap.put(circuitCopy, c);
+                    return addInputsOutputs(
+                            new HDLNodeCustom(elementName, v.getElementAttributes(), c),
+                            v, parent).createExpressions();
+
+                } else {
+                    HDLCircuit c = circuitMap.get(circuit);
+                    final String elementName = cleanName(v.getElementName());
+                    if (c == null) {
+                        c = new HDLCircuit(circuit, elementName, this);
+                        circuitMap.put(circuit, c);
+                    }
+
+                    return addInputsOutputs(
+                            new HDLNodeCustom(elementName, v.getElementAttributes(), c),
+                            v, parent).createExpressions();
+                }
 
             } else if (v.equalsDescription(Const.DESCRIPTION)) {
                 final HDLNodeAssignment node = createExpression(v, parent, td);
@@ -129,6 +151,10 @@ public class HDLModel implements Iterable<HDLCircuit> {
         } catch (ElementNotFoundException | PinException | NodeException e) {
             throw new HDLException("error creating node", e);
         }
+    }
+
+    private String cleanName(String s) {
+        return s.replace("-", "_");
     }
 
     private Expression createOperation(ArrayList<HDLPort> inputs, ExprOperate.Operation op) {
@@ -263,6 +289,17 @@ public class HDLModel implements Iterable<HDLCircuit> {
         @Override
         public int getBits(String name) {
             return values.get(name).getBits();
+        }
+    }
+
+    private static final class GenNum {
+        private int num;
+
+        private GenNum() {
+        }
+
+        public int getNum() {
+            return num++;
         }
     }
 }

@@ -1026,8 +1026,13 @@ public class CircuitComponent extends JComponent implements ChangedListener, Lib
                 if (elementType instanceof ElementTypeDescriptionCustom) {
                     ElementTypeDescriptionCustom customDescr = (ElementTypeDescriptionCustom) elementType;
                     if (customDescr.isGeneric()) {
-                        if (element.getElementAttributes().get(Keys.GENERIC).isEmpty())
-                            element.getElementAttributes().set(Keys.GENERIC, customDescr.getDeclarationDefault());
+                        if (element.getElementAttributes().get(Keys.GENERIC).isEmpty()) {
+                            try {
+                                element.getElementAttributes().set(Keys.GENERIC, customDescr.getDeclarationDefault());
+                            } catch (NodeException ex) {
+                                new ErrorMessage(Lang.get("msg_errParsingGenerics")).addCause(ex).show(CircuitComponent.this);
+                            }
+                        }
                     }
                 }
 

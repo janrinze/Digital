@@ -5,7 +5,6 @@
  */
 package de.neemann.digital.draw.library;
 
-import de.neemann.digital.analyse.SubstituteLibrary;
 import de.neemann.digital.core.NodeException;
 import de.neemann.digital.core.element.ElementAttributes;
 import de.neemann.digital.core.element.ElementFactory;
@@ -16,8 +15,8 @@ import de.neemann.digital.draw.elements.PinException;
 import de.neemann.digital.draw.elements.VisualElement;
 import de.neemann.digital.draw.model.ModelCreator;
 import de.neemann.digital.draw.model.NetList;
-import de.neemann.digital.hdl.hgs.*;
-import de.neemann.digital.hdl.hgs.function.Function;
+import de.neemann.digital.hdl.hgs.Parser;
+import de.neemann.digital.hdl.hgs.ParserException;
 import de.neemann.digital.hdl.hgs.refs.Reference;
 import de.neemann.digital.hdl.hgs.refs.ReferenceToStruct;
 import de.neemann.digital.hdl.hgs.refs.ReferenceToVar;
@@ -25,7 +24,6 @@ import de.neemann.digital.lang.Lang;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.TreeSet;
 
 /**
@@ -36,7 +34,7 @@ public final class ElementTypeDescriptionCustom extends ElementTypeDescription {
     private static final int MAX_DEPTH = 30;
     private final File file;
     private final Circuit circuit;
-    private final HashMap<String, Statement> map;
+    private final ResolveGenerics resolveGenerics;
     private String description;
     private NetList netList;
     private boolean isCustom = true;
@@ -53,7 +51,7 @@ public final class ElementTypeDescriptionCustom extends ElementTypeDescription {
         super(file.getName(), (ElementFactory) null, circuit.getInputNames());
         this.file = file;
         this.circuit = circuit;
-        map = new HashMap<>();
+        resolveGenerics = new ResolveGenerics();
         setShortName(file.getName());
         addAttribute(Keys.ROTATE);
         addAttribute(Keys.LABEL);
@@ -124,71 +122,11 @@ public final class ElementTypeDescriptionCustom extends ElementTypeDescription {
             throw new NodeException(Lang.get("err_recursiveNestingAt_N0", circuit.getOrigin()));
 
         if (isGeneric()) {
-            try {
-                Context args;
-                if (containingVisualElement != null) {
-                    args = containingVisualElement.getGenericArgs();
-                    if (args == null) {
-                        String argsCode = containingVisualElement.getElementAttributes().get(Keys.GENERIC);
-                        try {
-                            Statement s = getStatement(argsCode);
-                            args = new Context();
-                            if (containingVisualElement.getGenericArgs() != null)
-                                args.declareVar("args", containingVisualElement.getGenericArgs());
-                            s.execute(args);
-                        } catch (HGSEvalException e) {
-                            throw new NodeException(Lang.get("err_evaluatingGenericsCode_N_N_N", circuit.getOrigin(), containingVisualElement, argsCode), e);
-                        }
-                    }
-                } else
-                    args = new Context();
+            Circuit c = resolveGenerics.resolveCircuit(containingVisualElement, circuit, library);
 
-                Circuit c = circuit.createDeepCopy();
-                for (VisualElement ve : c.getElements()) {
-                    String gen = ve.getElementAttributes().get(Keys.GENERIC).trim();
-                    try {
-                        if (!gen.isEmpty()) {
-                            boolean isCustom = library.getElementType(ve.getElementName(), ve.getElementAttributes()).isCustom();
-                            Statement genS = getStatement(gen);
-                            if (isCustom) {
-                                Context mod = new Context()
-                                        .declareVar("args", args)
-                                        .declareFunc("setCircuit", new Function(1) {
-                                            @Override
-                                            protected Object f(Object... args) {
-                                                ve.setElementName(args[0].toString());
-                                                return null;
-                                            }
-                                        });
-                                genS.execute(mod);
-                                ve.setGenericArgs(mod);
-                            } else {
-                                Context mod = new Context()
-                                        .declareVar("args", args)
-                                        .declareVar("this", new SubstituteLibrary.AllowSetAttributes(ve.getElementAttributes()));
-                                genS.execute(mod);
-                            }
-                        }
-                    } catch (HGSEvalException e) {
-                        throw new NodeException(Lang.get("err_evaluatingGenericsCode_N_N_N", circuit.getOrigin(), ve, gen), e);
-                    }
-                }
-
-                return new ModelCreator(c, library, true, new NetList(netList, errorVisualElement), subName, depth, errorVisualElement);
-            } catch (IOException | ParserException e) {
-                throw new NodeException(Lang.get("err_evaluatingGenericsCode"), e);
-            }
+            return new ModelCreator(c, library, true, new NetList(netList, errorVisualElement), subName, depth, errorVisualElement);
         } else
             return new ModelCreator(circuit, library, true, new NetList(netList, errorVisualElement), subName, depth, errorVisualElement);
-    }
-
-    private Statement getStatement(String code) throws IOException, ParserException {
-        Statement genS = map.get(code);
-        if (genS == null) {
-            genS = new Parser(code).parse(false);
-            map.put(code, genS);
-        }
-        return genS;
     }
 
     @Override
@@ -209,19 +147,20 @@ public final class ElementTypeDescriptionCustom extends ElementTypeDescription {
 
     /**
      * @return the generics field default value
+     * @throws NodeException NodeException
      */
-    public String getDeclarationDefault() {
+    public String getDeclarationDefault() throws NodeException {
         if (declarationDefault == null)
             declarationDefault = createDeclarationDefault();
         return declarationDefault;
     }
 
-    private String createDeclarationDefault() {
+    private String createDeclarationDefault() throws NodeException {
         TreeSet<String> nameSet = new TreeSet<>();
         for (VisualElement ve : circuit.getElements()) {
             String gen = ve.getElementAttributes().get(Keys.GENERIC).trim();
-            try {
-                if (!gen.isEmpty()) {
+            if (!gen.isEmpty()) {
+                try {
                     Parser p = new Parser(gen);
                     p.enableRefReadCollection();
                     p.parse(false);
@@ -236,9 +175,11 @@ public final class ElementTypeDescriptionCustom extends ElementTypeDescription {
                             }
                         }
                     }
+                } catch (ParserException | IOException e) {
+                    final NodeException ex = new NodeException(Lang.get("err_evaluatingGenericsCode_N_N", ve, gen), e);
+                    ex.setOrigin(circuit.getOrigin());
+                    throw ex;
                 }
-            } catch (ParserException | IOException e) {
-                return "";
             }
         }
         StringBuilder sb = new StringBuilder();
