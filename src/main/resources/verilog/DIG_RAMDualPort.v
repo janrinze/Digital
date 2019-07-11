@@ -14,13 +14,14 @@ generics[1] := "AddrBits";
   input str,
   input C,
   input ld,
-  output [(Bits-1):0] D
+  output reg [(Bits-1):0] D
 );
   reg [(Bits-1):0] memory[0:((1 << AddrBits) - 1)];
 
-  assign D = ld? memory[A] : 'hz;
+  //assign D = ld? memory[A] : 'hz;
 
   always @ (posedge C) begin
+	D<=memory[A];
     if (str)
       memory[A] <= Din;
   end
